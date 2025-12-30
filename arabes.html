@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Les Ablutions - Pour ma Banane Préférée</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Playfair+Display&family=Charmonman&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ocean-blue: #a2d2ff;
+            --soft-pink: #f9d2ef;
+            --deep-purple: #6a0572;
+            --warm-gold: #d4a373;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #e0f2fe, #fefae0);
+            color: #4a4e69;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h1 {
+            font-family: 'Charmonman', cursive;
+            color: var(--deep-purple);
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 30px;
+        }
+
+        /* --- TABLEAU PAYSAGE --- */
+        .ablution-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+        }
+
+        .ablution-table th {
+            background: var(--ocean-blue);
+            color: white;
+            padding: 15px;
+            font-family: 'Charmonman', cursive;
+            font-size: 1.4em;
+            border-radius: 10px;
+        }
+
+        .step-row {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s;
+        }
+
+        .step-row:hover {
+            transform: scale(1.01);
+        }
+
+        .step-number {
+            background: var(--soft-pink);
+            color: var(--deep-purple);
+            font-weight: bold;
+            width: 50px;
+            text-align: center;
+            border-radius: 10px 0 0 10px;
+            font-size: 1.2em;
+        }
+
+        .arabic {
+            font-family: 'Amiri', serif;
+            font-size: 1.8em;
+            text-align: right;
+            direction: rtl;
+            padding: 15px;
+            color: #222;
+            width: 30%;
+        }
+
+        .translit {
+            color: var(--warm-gold);
+            font-weight: bold;
+            font-style: italic;
+            padding: 15px;
+            width: 30%;
+            border-left: 1px solid #eee;
+            border-right: 1px solid #eee;
+        }
+
+        .french {
+            padding: 15px;
+            color: var(--deep-purple);
+            width: 30%;
+        }
+
+        /* --- LICORNE --- */
+        .unicorn-box {
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bubble {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'Charmonman', cursive;
+            font-size: 0.9em;
+            color: #8c0f5f;
+            border: 1px solid var(--soft-pink);
+            margin-right: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .uni { font-size: 40px; animation: float 3s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>✨ Les étapes des Ablutions (Al-Woudou) ✨</h1>
+        
+        <table class="ablution-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Français</th>
+                    <th>Translittération</th>
+                    <th>Arabe</th>
+                </tr>
+            </thead>
+            <tbody id="steps-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="unicorn-box">
+        <div class="bubble">Pour ma banane préférée 💖</div>
+        <div class="uni">🦄</div>
+    </div>
+
+    <script>
+        const steps = [
+            { fr: "L'intention et dire Bismillah", tr: "Bismillâh", ar: "بِسْمِ اللَّهِ" },
+            { fr: "Laver les mains jusqu'aux poignets (3x)", tr: "Ghaslou-l yadayni ila-l kousou'ayn", ar: "غسل اليدين إلى الكوعين" },
+            { fr: "Rincer la bouche (3x)", tr: "Al-Madmadah", ar: "المضمضة" },
+            { fr: "Inspirer et expirer l'eau par le nez (3x)", tr: "Al-Istinshâq wa al-Istinthâr", ar: "الاستنشاق والاستنثار" },
+            { fr: "Laver le visage (3x)", tr: "Ghaslou-l wajh", ar: "غسل الوجه" },
+            { fr: "Laver les bras jusqu'aux coudes (3x)", tr: "Ghaslou-l yadayni ila-l mirfaqayn", ar: "غسل اليدين إلى المرفقين" },
+            { fr: "Passer les mains sur la tête (1x)", tr: "Mas-hou-r ra's", ar: "مسح الرأس" },
+            { fr: "Nettoyer les oreilles (1x)", tr: "Mas-hou-l oudhounayn", ar: "مسح الأذنين" },
+            { fr: "Laver les pieds jusqu'aux chevilles (3x)", tr: "Ghaslou-l rijlayn ila-l ka'bayn", ar: "غسل الرجلين إلى الكعبين" },
+            { fr: "Dire l'attestation de foi après", tr: "Ash-hadou an lâ ilâha ill-Allâh", ar: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ" }
+        ];
+
+        const tbody = document.getElementById('steps-body');
+        steps.forEach((s, i) => {
+            const row = document.createElement('tr');
+            row.className = 'step-row';
+            row.innerHTML = `
+                <td class="step-number">${i + 1}</td>
+                <td class="french">${s.fr}</td>
+                <td class="translit">${s.tr}</td>
+                <td class="arabic">${s.ar}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
