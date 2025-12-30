@@ -9,6 +9,7 @@
             --soft-pink: #f9d2ef;
             --warm-gold: #d4a373;
             --deep-purple: #6a0572;
+            --ocean-blue: #a2d2ff;
             --text-color: #4a4e69;
         }
 
@@ -21,8 +22,32 @@
             min-height: 100vh;
         }
 
+        /* --- BOUTON ABLUTIONS (HAUT GAUCHE) --- */
+        .nav-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--ocean-blue);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-family: 'Charmonman', cursive;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            background: var(--deep-purple);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
         /* --- CONTENU --- */
-        .main-content { flex: 1; margin-right: 260px; padding: 40px; }
+        .main-content { flex: 1; margin-right: 260px; padding: 60px 40px 40px 40px; }
         .quran-container {
             background: rgba(255, 255, 255, 0.9);
             padding: 30px;
@@ -100,7 +125,7 @@
         }
 
         h1, h2 { font-family: 'Charmonman', cursive; color: var(--deep-purple); text-align: center; }
-        select { width: 100%; padding: 12px; border-radius: 20px; border: 2px solid var(--warm-gold); background: #fefae0; margin-bottom: 20px; }
+        select { width: 100%; padding: 12px; border-radius: 20px; border: 2px solid var(--warm-gold); background: #fefae0; margin-bottom: 20px; font-family: inherit;}
 
         /* --- LICORNE --- */
         .unicorn-footer { position: fixed; bottom: 15px; left: 20px; display: flex; align-items: center; }
@@ -108,6 +133,8 @@
     </style>
 </head>
 <body>
+
+    <a href="arabes.html" class="nav-button">✨ Faire mes Ablutions</a>
 
     <div class="main-content">
         <div class="quran-container">
@@ -136,7 +163,7 @@
     </div>
 
     <script>
-        // --- LOGIQUE DE CHARGEMENT TRIPLE (AR, TRANS, FR) ---
+        // --- LOGIQUE DE CHARGEMENT ---
         async function loadSurah(number) {
             const display = document.getElementById('quranDisplay');
             display.innerHTML = "<p style='text-align:center'>Préparation de la lecture... ✨</p>";
@@ -165,21 +192,22 @@
                 display.innerHTML = html;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (e) {
-                display.innerHTML = "<p>Erreur lors du chargement des versets.</p>";
+                display.innerHTML = "<p>Erreur lors du chargement.</p>";
             }
         }
 
-        // --- CHARGEMENT INITIAL ---
         async function init() {
             // Horaires de Noyon
-            const resP = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Noyon&country=France&method=2');
-            const dP = await resP.json();
-            const t = dP.data.timings;
-            document.getElementById('p1').innerText = t.Fajr;
-            document.getElementById('p2').innerText = t.Dhuhr;
-            document.getElementById('p3').innerText = t.Asr;
-            document.getElementById('p4').innerText = t.Maghrib;
-            document.getElementById('p5').innerText = t.Isha;
+            try {
+                const resP = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Noyon&country=France&method=2');
+                const dP = await resP.json();
+                const t = dP.data.timings;
+                document.getElementById('p1').innerText = t.Fajr;
+                document.getElementById('p2').innerText = t.Dhuhr;
+                document.getElementById('p3').innerText = t.Asr;
+                document.getElementById('p4').innerText = t.Maghrib;
+                document.getElementById('p5').innerText = t.Isha;
+            } catch(e) {}
 
             // Liste Sourates
             const resS = await fetch('https://api.alquran.cloud/v1/surah');
