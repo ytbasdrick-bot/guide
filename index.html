@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Doux Coran & Prières</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Playfair+Display&family=Charmonman&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --soft-pink: #f9d2ef;
+            --warm-gold: #d4a373;
+            --deep-purple: #6a0572;
+            --text-color: #4a4e69;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            background: linear-gradient(135deg, #fefae0, #faedcd);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- CONTENU --- */
+        .main-content { flex: 1; margin-right: 260px; padding: 40px; }
+        .quran-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- SIDEBAR DROITE --- */
+        .sidebar-prayers {
+            width: 240px;
+            background: rgba(255, 255, 255, 0.7);
+            height: 100vh;
+            position: fixed;
+            right: 0; top: 0;
+            border-left: 2px dashed var(--warm-gold);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .prayer-card {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid var(--soft-pink);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .prayer-card:hover { 
+            background: var(--soft-pink); 
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* --- TEXTES --- */
+        .arabic { font-family: 'Amiri', serif; font-size: 2em; text-align: right; display: block; direction: rtl; margin-bottom: 10px; }
+        .verse-card { background: white; padding: 25px; margin-top: 20px; border-radius: 20px; border-left: 5px solid var(--warm-gold); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        h1, h2 { font-family: 'Charmonman', cursive; color: var(--deep-purple); text-align: center; }
+        select { width: 100%; padding: 12px; border-radius: 20px; border: 2px solid var(--warm-gold); background: #fefae0; margin-bottom: 20px; font-family: inherit; }
+
+        /* --- LICORNE --- */
+        .unicorn-footer { position: fixed; bottom: 15px; left: 20px; display: flex; align-items: center; }
+        .uni-bubble { background: white; padding: 6px 12px; border-radius: 15px; font-family: 'Charmonman', cursive; font-size: 0.8em; color: #8c0f5f; border: 1px solid var(--soft-pink); margin-left: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="quran-container">
+            <h1>Le Coran Lumineux</h1>
+            <select id="surahSelect"><option>Chargement des sourates...</option></select>
+            <div id="quranDisplay">
+                <p style="text-align: center; margin-top: 40px; color: var(--warm-gold);">
+                    Clique sur une prière pour découvrir sa sourate liée... ✨
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar-prayers" id="sidebar">
+        <h3 style="font-family:'Charmonman'; text-align:center; color:var(--deep-purple)">✨ Prières ✨</h3>
+        <div class="prayer-card" onclick="loadSurah(113)"><span>Fajr</span> <b id="p1">--:--</b></div>
+        <div class="prayer-card" onclick="loadSurah(1)"><span>Dhuhr</span> <b id="p2">--:--</b></div>
+        <div class="prayer-card" onclick="loadSurah(103)"><span>Asr</span> <b id="p3">--:--</b></div>
+        <div class="prayer-card" onclick="loadSurah(114)"><span>Maghrib</span> <b id="p4">--:--</b></div>
+        <div class="prayer-card" onclick="loadSurah(67)"><span>Isha</span> <b id="p5">--:--</b></div>
+        <p style="font-size: 0.7em; text-align: center; margin-top: auto; color: var(--warm-gold);">Noyon ✨</p>
+    </div>
+
+    <div class="unicorn-footer">
+        <div style="font-size:30px">🦄</div>
+        <div class="uni-bubble">Pour ma banane préférée 💖</div>
+    </div>
+
+    <script>
+        // --- LOGIQUE DE LIAISON ---
+        async function loadSurah(number) {
+            const display = document.getElementById('quranDisplay');
+            display.innerHTML = "<p style='text-align:center'>Un instant, je cherche les versets pour toi... ✨</p>";
+            
+            try {
+                const [resAr, resFr] = await Promise.all([
+                    fetch(`https://api.alquran.cloud/v1/surah/${number}`),
+                    fetch(`https://api.alquran.cloud/v1/surah/${number}/fr.hamidullah`)
+                ]);
+                const dataAr = await resAr.json();
+                const dataFr = await resFr.json();
+
+                let html = `<h2>${dataAr.data.englishName}</h2>`;
+                dataAr.data.ayahs.forEach((ay, i) => {
+                    html += `
+                        <div class="verse-card">
+                            <span class="arabic">${ay.text}</span>
+                            <span class="translation"><b>${i+1}.</b> ${dataFr.data.ayahs[i].text}</span>
+                        </div>`;
+                });
+                display.innerHTML = html;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (e) {
+                display.innerHTML = "<p>Désolé, une petite erreur est survenue.</p>";
+            }
+        }
+
+        // --- CHARGEMENT INITIAL ---
+        async function init() {
+            // Prières
+            const resP = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Noyon&country=France&method=2');
+            const dP = await resP.json();
+            const t = dP.data.timings;
+            document.getElementById('p1').innerText = t.Fajr;
+            document.getElementById('p2').innerText = t.Dhuhr;
+            document.getElementById('p3').innerText = t.Asr;
+            document.getElementById('p4').innerText = t.Maghrib;
+            document.getElementById('p5').innerText = t.Isha;
+
+            // Liste Sourates
+            const resS = await fetch('https://api.alquran.cloud/v1/surah');
+            const dS = await resS.json();
+            const sel = document.getElementById('surahSelect');
+            sel.innerHTML = '<option value="">Choisir une sourate...</option>';
+            dS.data.forEach(s => {
+                let o = document.createElement('option');
+                o.value = s.number;
+                o.textContent = `${s.number}. ${s.englishName}`;
+                sel.appendChild(o);
+            });
+        }
+
+        document.getElementById('surahSelect').addEventListener('change', (e) => {
+            if(e.target.value) loadSurah(e.target.value);
+        });
+
+        init();
+    </script>
+</body>
+</html>
